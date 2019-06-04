@@ -41,6 +41,9 @@ target = '/home/pi/research_experiments/Experiments/Stimuli/Sounds/Auditory_Oddb
 ###setup pins for triggers###
 GPIO.setup([4,17,27,22,5,6,13,19],GPIO.OUT)
 
+### setup pin for Camera Sync LED
+GPIO.setup(18,GPIO.OUT)
+
 ###setup pin for push button###
 pin = 26
 GPIO.setup(pin,GPIO.IN,pull_up_down=GPIO.PUD_UP)
@@ -68,6 +71,14 @@ def pi2trig(trig_num):
     
     return trig_pins
 
+def GoPro_LED_Flash(flash_num):
+    for flash in range(flash_num):
+        GPIO.output(18,GPIO.HIGH)
+        GPIO.output(pi2trig(9),1)
+        time.sleep(0.1)
+        GPIO.output(pi2trig(255),0)
+        time.sleep(0.1)
+        
 ###setup variables to record times###
 vid_time  = []
 trig_time   = []
@@ -113,6 +124,8 @@ time.sleep(0.5)
 GPIO.output(pi2trig(255),0)
 time.sleep(0.5)
 
+
+GoPro_LED_Flash(10)
 for i_tone in range(len(tones)):
     ###wait for a random amount of time between tones###
     delay = ((randint(0,500))*0.001)+1.49
@@ -146,7 +159,8 @@ for i_tone in range(len(tones)):
     time.sleep(0.005)
     GPIO.output(pi2trig(255),0)
     time.sleep(0.005)
-
+    
+GoPro_LED_Flash(10)
 ###show the end screen###
 timestamp = local_clock()
 outlet.push_sample([6], timestamp)
